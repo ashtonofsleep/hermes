@@ -7,7 +7,7 @@ export default (req, res) => {
 	response.status = getReasonPhrase(response.statusCode);
 	response.message = res.locals.message;
 	response.data = res.locals.data;
-	response.warnings = (res.locals.warnings.length !== 0) ? res.locals.warnings : undefined;
+	response.warnings = (res.locals.warnings && res.locals.warnings.length !== 0) ? res.locals.warnings : undefined;
 
 	res.status(response.statusCode).json(response);
 }
