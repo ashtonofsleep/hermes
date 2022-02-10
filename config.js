@@ -26,4 +26,21 @@ config.database = env.MONGOCS || (() => {
 	return `mongodb://${(user)?user+':'+pass+'@':''}${host}/${name}${opts}`;
 })
 
+config.qr = {
+	errorCorrectionLevel: 'Q',
+	margin: 2,
+	color: {
+		dark: '#111111',
+		light: '#ffffff'
+	}
+}
+
+config.nano = {
+	size: 10
+}
+
+config.linkGateway = 'https://link.wirkijowski.group/';
+config.bodySizeLimit = '15KB';
+
+
 export { config, env };
