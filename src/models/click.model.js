@@ -6,7 +6,6 @@ export default mongoose.model('Click', new mongoose.Schema({
 		ref: 'Link',
 		required: true,
 	},
-	host: String,
 	referer: String,
 	userAgent: String,
 	idAddress: String,

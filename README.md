@@ -15,6 +15,17 @@ Hermes purpose is to manage and track links. It acts as a proxy between a user a
 - Host / origin
 - Timestamp
 
+### Methods of operation
+
+#### Scenario 1: Worker has cached redirection target
+
+No need to retrieve data, only to register a click.
+Worker sends a `PUT` request to `/api/clicks/` using link's `ObjectId` stored in cache.
+
+#### Scenario 2: Worker has no data
+
+A request to the API needs to be made. Worker sends a `POST` request to `/api/links/{:code}/click/` to get link data and register a click at the same time.
+
 ## Flow
 
 This acts as a central API and depends on the data provided and requested by it's workers.

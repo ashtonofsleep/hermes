@@ -30,7 +30,7 @@ config.qr = {
 	errorCorrectionLevel: 'Q',
 	margin: 2,
 	color: {
-		dark: '#111111',
+		dark: '#000000',
 		light: '#ffffff'
 	}
 }

@@ -5,12 +5,17 @@ import {config} from '../../config';
 import {isObjectId} from '../helpers';
 
 import linkModel from '../models/link.model';
+import clickModel from '../models/click.model';
+
 import HermesError from '../error';
 
+/**
+ * Gets link data from the database using request parameters
+ */
 export const getLink = async (req, res, next) => {
 	try {
 		if (!req.params.id) throw new HermesError(400, 'No link ID provided', ['params', 'id']);
-		if (!isObjectId(req.params.id)) throw new HermesError(400, 'Bad Request', 'Invalid ID provided', ['params', 'id']);
+		if (!isObjectId(req.params.id)) throw new HermesError(400, 'Invalid ID provided', ['params', 'id']);
 
 		const node = await linkModel.findOne({_id: req.params.id});
 		if (!node) throw new HermesError(404, 'Not Found', 'No link matching provided ID found', ['params', 'id']);
@@ -20,7 +25,10 @@ export const getLink = async (req, res, next) => {
 	} catch (err) { next(err) }
 }
 
-export const generateQr = async(req, res, next) => {
+/**
+ * Generates a QR code using link's code and prefix from config
+ */
+export const generateQr = async (req, res, next) => {
 	try {
 		if (!req.params.id) throw new HermesError(400, 'No link ID provided', ['params', 'id']);
 		if (!isObjectId(req.params.id)) throw new HermesError(400, 'Invalid ID provided', ['params', 'id']);
@@ -36,6 +44,39 @@ export const generateQr = async(req, res, next) => {
 	} catch (err) { next(err) }
 }
 
+/**
+ * Gets link data and registers a click in one request. Returns link node.
+ */
+export const clickLink = async (req, res, next) => {
+	try {
+		if (!req.params.code) throw new HermesError(400, 'No link code provided', ['params', 'code']);
+		if (!/^[a-zA-Z0-9_-]{10}/i.test(req.params.code)) throw new HermesError(400, 'Invalid code provided', ['params', 'code']);
+
+		if (!req.body || req.body && [req.body.referer, req.body.userAgent, req.body.ipAddress, req.body.timestamp].includes(undefined)) throw new HermesError(400, 'Incomplete data provided', ['body']);
+
+		const link = await linkModel.findOne({code: req.params.code});
+		if (!link) throw new HermesError(404, 'Not Found', 'No link matching provided ID found', ['params', 'id']);
+
+		const click = await clickModel.create({
+			link: link._id,
+			referer: req.body.referer,
+			userAgent: req.body.userAgent,
+			ipAddress: req.body.ipAddress,
+			timestamp: req.body.timestamp
+		});
+
+		res.locals.data = {
+			clicked: !!(click),
+			node: link
+		};
+
+		return next();
+	} catch (err) { next(err) }
+}
+
+/**
+ * Creates a new link using request body
+ */
 export const createLink = async (req, res, next) => {
 	try {
 		const warnings = [];
@@ -66,6 +107,9 @@ export const createLink = async (req, res, next) => {
 	} catch (err) { next(err) }
 }
 
+/**
+ * Updates a link if changes detected. Ignores new data and returns unchanged node if update not needed.
+ */
 export const updateLink = async (req, res, next) => {
 	try {
 		const warnings = [];
@@ -109,6 +153,9 @@ export const updateLink = async (req, res, next) => {
 	} catch (err) { next(err) }
 }
 
+/**
+ * Deletes a link using request parameters
+ */
 export const deleteLink = async (req, res, next) => {
 	try {
 		if (!req.params.id) throw new HermesError(400, 'No link ID provided', ['params', 'id']);

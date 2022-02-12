@@ -36,7 +36,7 @@ router.get('/', (req, res, next) => {
 server.use('/api', router);
 
 server.use('*', (req, res, next) => {
-	if (!res.locals) return next(new HermesError(404, 'Not Found'), req, res, next);
+	if (res.locals === null) return next(new HermesError(404), req, res, next);
 	else next();
 })
 

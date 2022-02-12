@@ -3,11 +3,12 @@ import {createClick, deleteClick, getClick} from '../controllers/click.controlle
 
 const router = express.Router({mergeParams: true})
 
-router.route('/:id')
-	  .post(createClick);
+router.put('/', createClick);
 
 router.route('/:id')
 	  .get(getClick)
 	  .delete(deleteClick)
+
+router.put('/:code')
 
 export default router;
