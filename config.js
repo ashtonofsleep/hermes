@@ -2,10 +2,11 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const env = process.env;
-if (!env.NODE_ENV) env.NODE_ENV = 'development';
+if (!env.NODE_ENV) env.NODE_ENV = 'DEVELOPMENT';
 
 const config = {};
-config.debug = (env.NODE_ENV === 'development');
+config.env = env.NODE_ENV;
+config.debug = (config.env === 'DEVELOPMENT');
 config.port = env.PORT;
 
 if (!config.port) throw new Error('Unspecified port, cannot proceed');
@@ -40,7 +41,5 @@ config.nano = {
 }
 
 config.linkGateway = 'https://link.wirkijowski.group/';
-config.bodySizeLimit = '15KB';
 
-
-export { config, env };
+export default config;

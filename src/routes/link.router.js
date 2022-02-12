@@ -4,7 +4,7 @@ import {createLink, deleteLink, generateQr, clickLink, getLink, updateLink} from
 
 const router = express.Router({mergeParams: true})
 
-router.post('/', createLink)
+router.put('/', createLink)
 
 router.route('/:id')
 	  .get(getLink)
@@ -13,6 +13,6 @@ router.route('/:id')
 
 router.get('/:id/qr', generateQr);
 
-router.post('/:code/click', clickLink);
+router.post('/:code([a-zA-Z0-9_-]{10})/click', clickLink);
 
 export default router;

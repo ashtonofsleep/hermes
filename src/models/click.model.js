@@ -8,7 +8,9 @@ export default mongoose.model('Click', new mongoose.Schema({
 	},
 	referer: String,
 	userAgent: String,
-	idAddress: String,
+	clientHints: [String],
+	country: String,
+	ipAddress: String,
 	timestamp: Date
 }, {
 	id: false,

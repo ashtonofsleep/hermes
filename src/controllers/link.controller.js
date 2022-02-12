@@ -1,7 +1,7 @@
 import QRCode from 'qrcode';
 import {nanoid} from 'nanoid';
 
-import {config} from '../../config';
+import config from '../../config';
 import {isObjectId} from '../helpers';
 
 import linkModel from '../models/link.model';
@@ -52,15 +52,17 @@ export const clickLink = async (req, res, next) => {
 		if (!req.params.code) throw new HermesError(400, 'No link code provided', ['params', 'code']);
 		if (!/^[a-zA-Z0-9_-]{10}/i.test(req.params.code)) throw new HermesError(400, 'Invalid code provided', ['params', 'code']);
 
-		if (!req.body || req.body && [req.body.referer, req.body.userAgent, req.body.ipAddress, req.body.timestamp].includes(undefined)) throw new HermesError(400, 'Incomplete data provided', ['body']);
+		if (!req.body || Object.keys(req.body).length === 0) throw new HermesError(400, 'Incomplete data provided', ['body']);
 
 		const link = await linkModel.findOne({code: req.params.code});
 		if (!link) throw new HermesError(404, 'Not Found', 'No link matching provided ID found', ['params', 'id']);
 
 		const click = await clickModel.create({
 			link: link._id,
-			referer: req.body.referer,
+			referrer: req.body.referrer,
 			userAgent: req.body.userAgent,
+			clientHints: req.body.clientHints,
+			country: req.body.country,
 			ipAddress: req.body.ipAddress,
 			timestamp: req.body.timestamp
 		});
