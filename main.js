@@ -1,10 +1,10 @@
 import express from 'express';
 import mongoose from 'mongoose';
+import * as Sentry from "@sentry/node";
+import * as Tracing from "@sentry/tracing";
 import mongoSanitize from 'express-mongo-sanitize';
 import helmet from 'helmet';
 import hpp from 'hpp';
-import * as Sentry from "@sentry/node";
-import * as Tracing from "@sentry/tracing";
 
 import config from './config';
 
@@ -19,7 +19,7 @@ const server = express();
 const router = express.Router();
 
 Sentry.init({
-	dsn: "https://6dc679aba94245138425ac640e705cb5@o1074830.ingest.sentry.io/6201189",
+	dsn: config.sentry,
 	integrations: [
 		new Sentry.Integrations.Http({ tracing: true }),
 		new Tracing.Integrations.Express({ server }),
@@ -63,5 +63,5 @@ server.use(Sentry.Handlers.errorHandler());
 server.use(errorController);
 
 server.listen(config.port, () => {
-	console.log(`Hermes online at port ${config.port}`);
+	console.log(`Hermes online at port ${config.port} in ${config.env.toLowerCase()} mode`);
 })

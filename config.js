@@ -11,6 +11,8 @@ config.port = env.PORT;
 
 if (!config.port) throw new Error('Unspecified port, cannot proceed');
 
+config.sentry = env.SENTRY;
+
 config.database = env.MONGOCS || (() => {
 	let [user, pass, host, name, opts] = [
 		env.DB_USER,
