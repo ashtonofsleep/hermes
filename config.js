@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({path: `.env${(process.env.NODE_ENV) ? '.'+process.env.NODE_ENV.toLowerCase() : ''}`});
 
 const env = process.env;
 if (!env.NODE_ENV) env.NODE_ENV = 'DEVELOPMENT';
@@ -27,7 +27,7 @@ config.database = env.MONGOCS || (() => {
 	if (/(:\|\/\|\?\|#\|\[\|]\|@)/.test(pass)) pass = encodeURIComponent(pass);
 
 	return `mongodb://${(user)?user+':'+pass+'@':''}${host}/${name}${opts}`;
-})
+})();
 
 config.qr = {
 	errorCorrectionLevel: 'Q',

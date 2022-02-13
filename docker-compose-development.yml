@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  nginx:
+    image: "nginx:alpine"
+    container_name: balancer
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "8010:80"
+
+  api:
+    image: "wirkijowskidev/hermes"
+    container_name: hermes
+    environment:
+      ENVIRONMENT: "DEVELOPMENT"
+      PORT: 4000
+    depends_on:
+      - nginx
+
+  gateway_redis:
+    image: "redis:alpine"
+    container_name: gateway_redis
+    ports:
+      - "6379:6379"
+
+  gateway:
+    image: "wirkijowskidev/hermes-gateway"
+    environment:
+      ENVIRONMENT: "DEVELOPMENT"
+      PORT: 5000
+    depends_on:
+      - api
+      - nginx
+      - gateway_redis
