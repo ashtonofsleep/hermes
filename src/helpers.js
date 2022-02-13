@@ -10,10 +10,6 @@ import mongoose from "mongoose";
  *
  * @returns				Boolean	Validation result.
  */
-const isObjectId = (string) => {
+export const isObjectId = (string) => {
 	return mongoose.Types.ObjectId.isValid(string);
-}
-
-export {
-	isObjectId
 }

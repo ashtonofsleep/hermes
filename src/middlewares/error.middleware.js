@@ -1,3 +1,5 @@
+import config from '../../config';
+
 export default (err, req, res, next) => {
 	err.statusCode ??= 500;
 	err.status ??= 'Internal Server Error';
@@ -10,6 +12,7 @@ export default (err, req, res, next) => {
 		statusCode: err.statusCode,
 		status: err.status,
 		message: err.message || undefined,
+		...((config.env === 'DEVELOPMENT') ? { trace: err.trace } : undefined),
 		errorId: res.sentry
 	});
 }
